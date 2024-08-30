@@ -1,7 +1,9 @@
 package parser
 
 import (
-    "testing"
+	"fmt"
+	"reflect"
+	"testing"
 )
 
 func TestParseHappyPath(t *testing.T) {
@@ -10,7 +12,8 @@ func TestParseHappyPath(t *testing.T) {
 ## Skill
 ### Date
 #### Url
-Description`
+Item
+Item2`
     result, err := Parse(input)
     if err != nil {
         t.Fatalf("Unexecpted eroor :%s", err.Error())
@@ -38,8 +41,9 @@ Description`
     }
 
 
-    description := "Description"
-    if result.description != description {
+    description := []string{"Item","Item2"}
+    if !reflect.DeepEqual(result.description, description){
+        fmt.Printf("want: %q, got: %q\n", description, result.description)
         t.Fatalf("want %s got %s", description, result.description)
     }
 }
