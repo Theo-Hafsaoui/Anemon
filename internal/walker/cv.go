@@ -6,10 +6,10 @@ import (
 	"strings"
 )
 
-// walkCV traverses the directory tree starting at root and returns a map where
-// the keys are the relative paths without the .md extension and the values are
-// the contents of the markdown files.
-func walkCV(root string) (map[string]string, error) {
+// walkCV traverses the directory tree starting at root and returns a map of map where
+// the keys are first the language folowed by the second key which is the section
+// the values are the contents of the markdown files.
+func WalkCV(root string) (map[string]map[string]string, error) {
 	fileMap := make(map[string]string)
 	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
@@ -28,5 +28,13 @@ func walkCV(root string) (map[string]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	return fileMap, nil
+        md_per_language := make(map[string]map[string]string)
+        for k := range fileMap{
+            k_split := strings.Split(k,"/")
+            if md_per_language [k_split[0]] == nil {
+                md_per_language[k_split[0]]= make(map[string]string)
+            }
+            md_per_language[k_split[0]][k_split[1]]=fileMap[k]
+        }
+	return md_per_language, nil
 }

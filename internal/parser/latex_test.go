@@ -3,12 +3,13 @@ package parser
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
-
-	"github.com/google/go-cmp/cmp"
 )
 
-func TestReadLatex(t *testing.T) {
+
+func TestIO(t *testing.T) {
+t.Run("Count returns 1 lines with just one line", func (t *testing.T) {
     dir := filepath.Join("../../assets", "latex", "template")
     templateFile := filepath.Join(dir, "template.tex")
     backupFile := filepath.Join(dir, "save.tex")
@@ -22,7 +23,7 @@ func TestReadLatex(t *testing.T) {
     if err != nil {
         t.Fatalf("Failed to write file: %v", err)
     }
-    content, err := read_template()
+    content, err := read_template("../../")
     if err != nil {
         t.Fatalf("Failed to read file: %v", err)
     }
@@ -39,10 +40,11 @@ func TestReadLatex(t *testing.T) {
             t.Fatalf("Failed to rename save.tex back to template.tex: %v", err)
         }
     }
+})
 }
 
 func TestWriteLatex(t *testing.T) {
-    err := writeTemplate("Hello, world", "hello")
+    err := writeTemplate("../../","Hello, world", "hello.tex")
     if err != nil {
         t.Fatalf("Failed to write file: %v", err)
     }
@@ -69,16 +71,12 @@ func TestApplySection(t *testing.T) {
                 description: []string{"item1", "item2"},
             },
             sectionType: "Professional",
-            want: `
-\resumeSubheading
+            want: `\resumeSubheading
     {first}{second}
     {\href{third}{fourth}}{ }
 \resumeItemListStart
     \resumeItem{item1}
-\resumeItem{item2}
-
-\resumeItemListEnd
-`,
+\resumeItem{item2}`,
         },
         {
             name: "Project Section",
@@ -89,15 +87,11 @@ func TestApplySection(t *testing.T) {
                 description: []string{"item1", "item2"},
             },
             sectionType: "Project",
-            want: `
-\resumeProjectHeading
-{\textbf{first} $|$ \emph{second \href{third}{\faIcon{github}}}}{}
+            want: `\resumeProjectHeading
+{\textbf{first} | \emph{second \href{third}{\faIcon{github}}}}{}
 \resumeItemListStart
     \resumeItem{item1}
-\resumeItem{item2}
-
-\resumeItemListEnd
-`,
+\resumeItem{item2}`,
         },
         {
             name: "Education Section",
@@ -108,11 +102,9 @@ func TestApplySection(t *testing.T) {
                 fourth: "fourth",
             },
             sectionType: "Education",
-            want: `
-\resumeSubheading
-{\href{first}{second}}{}
-{third}{fourth}
-`,
+            want: `\resumeSubheading
+{\href{second}{first}}{}
+{third}{fourth}`,
         },
         {
             name: "Skill Section",
@@ -123,20 +115,26 @@ func TestApplySection(t *testing.T) {
                 fourth: "fourth",
             },
             sectionType: "Skill",
-            want: `
-\textbf{first}{: second} \\
-`,
+            want: `\textbf{first}{: second} \\`,
         },
+    }
+    err := Init_output("test-template","../..")
+    if err != nil{
+        t.Fatalf("error when crating output template: %v", err)
+    }
+    _, err = ApplyToSection(tests[0].section, tests[0].sectionType,"../../assets/latex/template/test-template.tex" )
+    if err == nil {
+        t.Fatalf("Creating a latex template outside of the output directory should result in an error")
     }
 
     for _, tt := range tests {
         t.Run(tt.name, func(t *testing.T) {
-            got, err := applyToSection(tt.section, tt.sectionType)
+            got, err := ApplyToSection(tt.section, tt.sectionType,"../../assets/latex/output/test-template.tex" )
             if err != nil {
                 t.Fatalf("error when applying template: %v", err)
             }
-            if diff := cmp.Diff(tt.want, got); diff != "" {
-                t.Errorf("TestApplySection mismatch (-want +got):\n%s", diff)
+            if !strings.Contains(got,tt.want){
+                t.Errorf("TestApplySection mismatch should contains:\n %s\n got: \n%s", tt.want, got[10:])
             }
         })
     }

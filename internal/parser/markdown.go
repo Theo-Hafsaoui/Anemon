@@ -2,7 +2,8 @@ package parser
 
 import (
 	"errors"
-	"regexp"
+        "regexp"
+	"fmt"
 	"strings"
 )
 
@@ -15,6 +16,11 @@ type Section struct {
     third  string
     fourth  string
     description  []string
+}
+
+func (s Section) String() string {
+    return fmt.Sprintf("1: %s\n2: %s\n3: %s\n4: %s\nitems: %v",
+        s.first,s.second,s.third,s.fourth,s.description)
 }
 
 /*

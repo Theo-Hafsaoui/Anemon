@@ -28,27 +28,41 @@ func TestWalkCV(t *testing.T) {
 		}
 	}
 
-	result, err := walkCV(rootDir)
+	result, err := WalkCV(rootDir)
 	if err != nil {
 		t.Fatalf("walkCV failed: %v", err)
 	}
 
-	expected := map[string]string{
-		"eng/education": "Education",
-		"eng/project":   "Project",
-		"fr/education":  "Education",
-		"fr/work":       "Work",
+	expected := map[string]map[string]string{
+		"eng": {
+			"education": "Education",
+			"project":   "Project",
+		},
+		"fr": {
+			"education": "Education",
+			"work":      "Work",
+		},
 	}
 
-	for key, expectedValue := range expected {
-		if result[key] != expectedValue {
-			t.Errorf("Expected %s to be %q, got %q", key, expectedValue, result[key])
+	for lang, expectedFiles := range expected {
+		if resultFiles, ok := result[lang]; ok {
+			for file, expectedContent := range expectedFiles {
+				if resultContent, ok := resultFiles[file]; ok {
+					if resultContent != expectedContent {
+						t.Errorf("Expected %s/%s to be %q, got %q", lang, file, expectedContent, resultContent)
+					}
+				} else {
+					t.Errorf("Expected file %s/%s not found in result", lang, file)
+				}
+			}
+		} else {
+			t.Errorf("Expected language %s not found in result", lang)
 		}
 	}
 
-	for key := range result {
-		if _, found := expected[key]; !found {
-			t.Errorf("Unexpected key found: %s", key)
+	for lang := range result {
+		if _, found := expected[lang]; !found {
+			t.Errorf("Unexpected language found: %s", lang)
 		}
 	}
 }

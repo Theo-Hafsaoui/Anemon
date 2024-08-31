@@ -14,7 +14,7 @@ const NB_P_PROF = 4
 
 const proj_template = `
 \resumeProjectHeading
-{\textbf{1} $|$ \emph{2 \href{3}{\faIcon{github}}}}{}
+{\textbf{1} | \emph{2 \href{3}{\faIcon{github}}}}{}
 \resumeItemListStart
     %ITEMS%
 \resumeItemListEnd
@@ -23,7 +23,7 @@ const NB_P_PROJ = 3
 
 const edu_template = `
 \resumeSubheading
-{\href{1}{2}}{}
+{\href{2}{1}}{}
 {3}{4}
 `
 const NB_P_EDU = 4 
