@@ -1,0 +1,41 @@
+name: Compile LaTeX Document
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Cache Docker layers
+      uses: actions/cache@v3
+      with:
+        path: /tmp/.buildx-cache
+        key: ${{ runner.os }}-buildx-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-
+
+    - name: Build Docker image
+      run: docker build . -t anemon
+
+    - name: Run Docker container
+      run: docker run --rm -v ${{ github.workspace }}/assets/latex/output:/output anemon 
+
+    - name: Upload compiled PDF
+      uses: actions/upload-artifact@v4
+      with:
+        name: compiled-pdf
+        path: |
+          ${{ github.workspace }}/assets/latex/output/*.pdf

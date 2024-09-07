@@ -29,6 +29,6 @@ const edu_template = `
 const NB_P_EDU = 4 
 
 const sk_template = `
-\textbf{1}{: 2} \\
+\item \textbf{1}{: 2} \\
 `
 const NB_P_SK = 2 
