@@ -1,4 +1,4 @@
-package parser
+package markuplanguages
 
 import (
 	"os"
@@ -9,7 +9,7 @@ import (
 
 
 func TestIO(t *testing.T) {
-t.Run("Count returns 1 lines with just one line", func (t *testing.T) {
+t.Run("should read the template in assets", func (t *testing.T) {
     dir := filepath.Join("../../assets", "latex", "template")
     templateFile := filepath.Join(dir, "template.tex")
     backupFile := filepath.Join(dir, "save.tex")
@@ -41,9 +41,8 @@ t.Run("Count returns 1 lines with just one line", func (t *testing.T) {
         }
     }
 })
-}
 
-func TestWriteLatex(t *testing.T) {
+t.Run("should write a new template in output", func (t *testing.T) {
     err := writeTemplate("../../","Hello, world", "hello.tex")
     if err != nil {
         t.Fatalf("Failed to write file: %v", err)
@@ -52,9 +51,9 @@ func TestWriteLatex(t *testing.T) {
     if err != nil {
         t.Fatalf("Failed to remove file: %v", err)
     }
-}
+})
 
-func TestApplySection(t *testing.T) {
+t.Run("should apply a section in output cv", func (t *testing.T) {
     tests := []struct {
         name      string
         section   Section
@@ -138,5 +137,5 @@ func TestApplySection(t *testing.T) {
             }
         })
     }
+})
 }
-

@@ -1,4 +1,4 @@
-package parser
+package markuplanguages
 
 import (
 	"errors"
@@ -27,8 +27,11 @@ func (s Section) String() string {
 Parse parses a Markdown-like `paragraph` into a `Section`, extracting headings and description based on the number of leading hashtags. Returns an error if the format is invalid.
 */
 func Parse(paragraph string) (Section,error){
-    r, _ := regexp.Compile("^#+")
     section := Section{}
+    if len(strings.Split(paragraph, "\n\n")) > 1{
+        return section, errors.New("Tried to parse mutiple paragraph into a single section")
+    }
+    r, _ := regexp.Compile("^#+")
     for _, line := range strings.Split(strings.TrimRight(paragraph, "\n"), "\n") {
         nb_hashtag := len(r.FindString(line))
         switch{

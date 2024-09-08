@@ -1,10 +1,12 @@
 package cmd
 
 import (
-	"anemon/internal/parser"
+	m_lang "anemon/internal/markup_languages"
 	"anemon/internal/walker"
 	"errors"
 	"os"
+	"strings"
+
 	"github.com/spf13/cobra"
 )
 
@@ -32,23 +34,29 @@ var generateCmd = &cobra.Command{
 //Use a CV map created by `getSectionMapFrom` and write for each lang key a latex CV using the given information
 func createLatexCVFrom(dir string, CV map[string]map[string]string )(error){
         for lang := range CV{
-            err := parser.Init_output(lang+"-CV",dir)
+            err := m_lang.Init_output(lang+"-CV",dir)
             if err != nil{
                 return err
             }
             for sec_name := range CV[lang]{
-                sec, err := parser.Parse(CV[lang][sec_name])
-                if err != nil {
-                    return err
-                }
-                _,err = parser.ApplyToSection(sec,sec_name,dir+"/assets/latex/output/"+lang+"-CV.tex")
-                if err != nil {
-                    return err
+                for _,paragraphe := range strings.Split(CV[lang][sec_name], "\n\n"){
+                    if len(paragraphe)<=1 {
+                        continue
+                    }
+                    sec, err := m_lang.Parse(paragraphe)
+                    if err != nil {
+                        return err
+                    }
+                    _,err = m_lang.ApplyToSection(sec,sec_name,dir+"/assets/latex/output/"+lang+"-CV.tex")
+                    if err != nil {
+                        return err
+                    }   
                 }
             }
         }
         return nil
 }
+
 //TODO consider struct for this map of map
 //Walk throught the CV directory and return a map of lang within each their is a map of section
 func getSectionMapFrom(dir string)(map[string]map[string]string,error){

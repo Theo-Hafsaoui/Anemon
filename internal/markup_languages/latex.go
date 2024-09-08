@@ -1,4 +1,4 @@
-package parser
+package markuplanguages
 
 import (
 	"errors"
@@ -48,18 +48,22 @@ func ApplyToSection(section Section, section_type string, output_path string)(st
     switch{
 
     case section_type == "Professional":
-        template = strings.Replace(template,"%EXPERIENCE_SECTIONS%", replace_param(prof_template,NB_P_PROF,replacements),1)
+        template = strings.Replace(template,"%EXPERIENCE_SECTIONS%",
+            "%EXPERIENCE_SECTIONS%\n"+replace_param(prof_template,NB_P_PROF,replacements),1)
         template = replace_items(template, section.description)
 
     case section_type == "Project":
-        template = strings.Replace(template,"%PROJECTS_SECTIONS%", replace_param(proj_template,NB_P_PROJ,replacements),1)
+        template = strings.Replace(template,"%PROJECTS_SECTIONS%",
+            "%PROJECTS_SECTIONS%\n"+replace_param(proj_template,NB_P_PROJ,replacements),1)
         template = replace_items(template, section.description)
 
     case section_type == "Education":
-        template = strings.Replace(template,"%EDUCATION_SECTIONS%", replace_param(edu_template,NB_P_EDU,replacements),1)
+        template = strings.Replace(template,"%EDUCATION_SECTIONS%",
+            "%EDUCATION_SECTIONS%\n"+replace_param(edu_template,NB_P_EDU,replacements),1)
 
     case section_type == "Skill"://TODO https://github.com/Theo-Hafsaoui/Anemon/issues/1
-        template = strings.Replace(template,"%SKILL_SECTIONS%", replace_param(sk_template,NB_P_SK,replacements),1)
+        template = strings.Replace(template,"%SKILL_SECTIONS%",
+            "%SKILL_SECTIONS%\n"+replace_param(sk_template,NB_P_SK,replacements),1)
     default:
         return "",errors.New("Don't know type "+section_type)
     }
@@ -74,7 +78,7 @@ func ApplyToSection(section Section, section_type string, output_path string)(st
 //Search and replace the number in range of `nb_params` by their replacement
 func replace_param(template string, nb_params int, replacements []string)string{
         for  i := 0; i < nb_params; i++ {
-            position := fmt.Sprintf("%d", i+1)
+            position := fmt.Sprintf("$%d", i+1)
             template = strings.Replace(template,
                 position, replacements[i], 1)
         }
@@ -90,3 +94,9 @@ func replace_items(template string, section_items []string)string{
         "%ITEMS%", items, 1)
     return template
 }
+
+//Clean from %anchor% and sanitize the special charactere
+//inside the latex doc in the output directory
+//func clean_and_sanitize()error{
+//    return nil
+//}

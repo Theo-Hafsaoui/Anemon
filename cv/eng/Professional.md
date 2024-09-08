@@ -1,19 +1,18 @@
 # Back-End Intern  
 ## February 2024 -- August 2024  
-### Qonto
-#### End of studies internship
- 
-- Contributed within a Cross Functional Team (CFT) to the standardization and extension of the onboarding process for four new markets (Austria, Netherlands, Belgium, Portugal). From design to implementation, in coordination with stakeholders (Risk, AML, Product), to ensure a smooth and compliant integration, with deployment scheduled for August.
-- Led the extraction of back-office logic from a Ruby monolith into a microservice, deploying in a trunk-based development environment. Collaborated closely with the Ops teams throughout the process. Monitored production using Grafana, Sentry, ArgoCD, and Kibana to ensure quality and reliability, enhancing system maintainability by decoupling microservices.
-- Improved the reliability and observability of microservices by completing the tracing mechanisms and implementing Service Level Objectives (SLOs).
+### TechCorp  
+#### Internship
+- Assisted in developing and optimizing a key business process for expanding into new markets, collaborating with various teams to ensure compliance and smooth integration.
+- Participated in the migration of core backend logic from a monolithic application to a microservice architecture, improving system performance and scalability.
+- Enhanced system monitoring and reliability by implementing tracing mechanisms and performance objectives.
 
-# Full Stack Developer  
+# Full-Stack Intern
 ## June 2023 -- September 2023  
-### Coexel
-#### Internship then Fixed-Term Contract
+### DevSolutions  
+#### Internship
+- Developed a service to process large datasets, improving the accuracy and speed of data retrieval and analysis.
+- Refactored legacy code to modernize and enhance system performance and maintainability.
+- Implemented an API to streamline data management processes, improving flexibility and scalability.
+- Set up a deployment pipeline, automating and improving the efficiency of software updates.
+- Optimized system performance, significantly reducing response times and improving user experience.
 
-- Designed and developed a Python service for Named Entity Recognition (NER) using spaCy to efficiently identify named entities in 92M+ documents. Utilization of Elasticsearch for storage and optimized document search, enabling users to gain further insights into monitored themes.
-- Rewrote an old website monitoring system created in Java to Python, enhancing maintainability and system performance.
-- Implemented a RESTful API in Python using FastAPI, providing increased flexibility and scalability for data management and requests.
-- Created a deployment pipeline with Docker and Github Actions, streamlining the deployment process and enabling faster and more robust updates.
-- Significantly improved performance by reducing the number of GET requests from 5 to 1, resulting in an 85\% faster display
