@@ -2,6 +2,7 @@ package markuplanguages
 
 import (
 	"errors"
+	"regexp"
 	"fmt"
 	"os"
 	"strings"
@@ -71,6 +72,9 @@ func ApplyToSection(section Section, section_type string, output_path string)(st
     if len(path_name) == 1 {
         return template,errors.New("Trying to save outside of output file, at "+output_path)
     }
+    if err != nil{
+        return "",err
+    }
     err = writeTemplate(path_name[0],template,path_name[1])
     return template,err
 }
@@ -82,7 +86,7 @@ func replace_param(template string, nb_params int, replacements []string)string{
             template = strings.Replace(template,
                 position, replacements[i], 1)
         }
-    return template
+    return sanitize(template)
 }
 
 func replace_items(template string, section_items []string)string{
@@ -92,11 +96,23 @@ func replace_items(template string, section_items []string)string{
     }
     template = strings.Replace(template,
         "%ITEMS%", items, 1)
-    return template
+    return sanitize(template)
 }
 
-//Clean from %anchor% and sanitize the special charactere
-//inside the latex doc in the output directory
-//func clean_and_sanitize()error{
-//    return nil
-//}
+//Sanitize the special charactere
+func sanitize(template string)(string){
+	replacements := []struct {
+		pattern     string
+		replacement string
+	}{
+		{`[0-9]\%`, `\\%`},
+		{`\*\*(.*?)\*\*`, `\textbf{$1}`},
+		{`\*(.*?)\*`, `\emph{$1}`},
+		//{`\[(.*?)\]\((.*?)\)`, `\href{$2}{$1}`},
+	}
+	for _, r := range replacements {
+		re := regexp.MustCompile(r.pattern)
+		template = re.ReplaceAllString(template, r.replacement)
+	}
+	return  template
+}
