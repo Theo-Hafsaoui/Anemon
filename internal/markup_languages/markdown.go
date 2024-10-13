@@ -24,16 +24,35 @@ func (s Section) String() string {
 }
 
 /*
-Parse parses a Markdown-like `paragraph` into a `Section`, extracting headings and description based on the number of leading hashtags. Returns an error if the format is invalid.
+Parse parses a Markdown-like `paragraph` into a `Section`,
+extracting headings and description based on the number of leading hashtags or stars.
+Returns an error if the format is invalid.
 */
 func Parse(paragraph string) (Section,error){
     section := Section{}
     if len(strings.Split(paragraph, "\n\n")) > 1{
         return section, errors.New("Tried to parse mutiple paragraph into a single section")
     }
-    r, _ := regexp.Compile("^#+")
+    hashtag_regex, _ := regexp.Compile("^#+")
+    wasASkill := false
     for _, line := range strings.Split(strings.TrimRight(paragraph, "\n"), "\n") {
-        nb_hashtag := len(r.FindString(line))
+        nb_hashtag := len(hashtag_regex.FindString(line))
+
+        if len(line) == 0{
+            continue
+        }
+
+        if wasASkill {
+            wasASkill = false
+            section.second= strings.TrimLeft(line,"- ")
+        }
+
+        if nb_hashtag == 0 && string(line[0])=="*" && len(strings.Trim(line,"*")) == len(line) - 4 {//Trim should **tt** -> tt
+            section.first= strings.Trim(line,"*")
+            wasASkill = true
+        }
+
+
         switch{
         case nb_hashtag>0 && line[nb_hashtag] != ' ':
             return section, errors.New("Err: cannot parse this md line{"+line+"}  # should be followed by space")
