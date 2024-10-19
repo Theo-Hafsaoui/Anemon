@@ -1,7 +1,7 @@
 package main
 
 import (
-    "anemon/cmd"
+	"anemon/cmd"
 )
 
 func main() {

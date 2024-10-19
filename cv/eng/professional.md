@@ -15,4 +15,3 @@
 - Implemented an API to streamline data management processes, improving flexibility and scalability.
 - Set up a deployment pipeline, automating and improving the efficiency of software updates.
 - Optimized system performance, significantly reducing response times and improving user experience.
-

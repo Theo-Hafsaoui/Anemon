@@ -31,7 +31,10 @@ jobs:
       run: docker build . -t anemon
 
     - name: Run Docker container
-      run: docker run --rm -v ${{ github.workspace }}/assets/latex/output:/output anemon 
+      run: docker run --rm -v ${{ github.workspace }}/assets/latex/output:/app/assets/latex/output anemon
+
+    - name: LSINFO
+      run: ls -al && tree
 
     - name: Upload compiled PDF
       uses: actions/upload-artifact@v4

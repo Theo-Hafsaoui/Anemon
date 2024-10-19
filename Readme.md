@@ -1,139 +1,68 @@
-This project is a simple tool written in Go that generates customized CVs from a directory of Markdown files. The CVs are generated based on a provided `output.yml` file, which specifies different skill sets or features (e.g., "foo" or "bar"). The generated CVs are output in LaTeX format and can be compiled locally or using GitHub Actions.
+![Anemon Project](https://github.com/user-attachments/assets/1399b964-5dfc-4dd5-b9ed-f333a3f768fe)  
 
-## Project Overview
+# Anemon: CV Management and Generation  
 
-Given a directory structure containing Markdown files for different sections of a CV (e.g., education, projects, work experience), this tool will:
+Anemon is a simple tool designed to help you manage and generate tailored CVs.  
+Crafting personalized CVs for every job application can be tedious and time-consuming, but Anemon aims to simplifies the process by focusing on two key features:  
 
-1. Parse the directory structure and extract relevant sections for both English and French CVs.
-2. Use the provided `output.yml` configuration to determine which features or skills to prioritize in different versions of the CV.
-3. For each type (e.g., "foo", "bar") specified in `output.yml`, search the corresponding sections for matching lines. These lines will be moved higher in the CV and emphasized (e.g., through formatting) to draw attention to them.
-4. Generate CVs for each type specified in the `output.yml`. The number of CVs generated will depend on the number of types defined. For instance, if there are two types (e.g., "foo" and "bar"), four CVs will be generated (Foo in English, Foo in French, Bar in English, Bar in French). If there are more types, the number of CVs will increase accordingly.
-5. The generated CVs are first output in LaTeX format, which can then be compiled into a final PDF.
+1. **Language Support**  
+   Anemon allows you to maintain CVs in multiple languages. Each language is represented by a separate directory (e.g., `eng` for English, `fr` for French),  
+   where you can organize the corresponding sections of your CV.  
 
-## Example `output.yml`
+2. **Variant Support**  
+   Variants make each CV unique by emphasizing specific keywords that align with a given application.  
+   Anemon helps highlight these keywords and prioritizes relevant content to bring your skills to the forefront.  
 
-Below is an example of an `output.yml` configuration file:
+If your CV becomes too lengthy, Anemon can automatically trim it by removing sections that lack or have insufficient emphasis on your chosen keywords.  
+This allows you to be detailed in your Markdown source files without worrying about verbosity—irrelevant details will be excluded in the final CV.  
 
-```yaml
-info:
-	name:aNemoN
-	first_anem:NoName
-	phone_number:+33....
-	ect..
-foo:
-  - FooFeature1
-  - FooFeature2
-  - FooFeature3
+![Preview image](https://github.com/user-attachments/assets/19161e85-c666-40d1-978c-df4857075f13)  
 
-bar:
-  - BarFeature1
-  - BarFeature2
-  - BarFeature3
-```
+### Getting Started
 
-This configuration file indicates that for each "foo" and "bar" type CV, the tool will search the relevant sections for "FooFeature1", "FooFeature2", "FooFeature3" (and similarly for "Bar"). Any line containing these features will be moved higher in the CV and emphasized (e.g., bolded or italicized) in the LaTeX output. The number of CVs generated depends on the number of types (e.g., "foo" and "bar") specified.
+#### How to Create Your CV
+To create your own CV, it is recommended to start with this repository, as the structure should be, I hope, intuitive.  
+Two critical elements need your attention:  
+1. **The CV Directory**  
+   Each language has its own directory inside the `CV` folder. Within each language directory, you'll find Markdown documents representing  
+   mandatory sections of the CV. These sections may vary in structure as some require more details (e.g., dates or years). The existing examples should suffice, but if you have any questions, don't hesitate to open an issue.  
+2. **The `params.yaml` File**  
+   This file contains your personal information and the profile(s) you want to generate CVs for. Each profile will create a new CV.
 
-## Example Directory Structure
+#### Using GitHub (Recommended)
+To create your CV:  
+1. **Fork** this repository.  
+2. Update the `params.yaml` and CV file with your information.  
+3. Once updated, the CI/CD pipeline will compile the CVs and publish them as artifacts on GitHub:  
+   - Navigate to the **Actions** tab (next to the Pull Requests tab).  
+   - Select the **Compile LaTeX Document** workflow.  
+   - Inside the workflow, click on the job corresponding to your desired CV and download the `compiled-pdf.zip` file from the artifacts section.  
 
-Here’s an example of a canonical directory structure for the CV content:
+![Action Tab](https://github.com/user-attachments/assets/f15c7c71-022b-4bf2-b79d-2e5ef5f1e65e)  
 
-```
-cv/
-├── eng
-│   ├── education.md
-│   ├── project.md
-│   └── work.md
-└── fr
-    ├── education.md
-    ├── project.md
-    └── work.md
-```
+#### Running Locally  
+You can run Anemon locally using one of the following methods:  
 
-The structure includes separate directories for English (`eng`) and French (`fr`) versions of the CV. Each directory contains Markdown files for different sections of the CV, such as `education.md`, `project.md`, and `work.md`.
+1. **Using Docker**  
+   Build the Docker image and run it using the provided `Makefile`. This setup creates a volume to simplify PDF extraction.  
 
-## Workflow
+   ```bash
+   docker build -t anemon .  
+   make run-docker  
+   ```  
 
-### Conceptual Flow
+2. **Running Natively**  
+   Alternatively, build and run Anemon natively using the `Makefile`:  
+   ```bash
+   ./anemon -g  
+   ```  
+   This approach requires a local installation of LaTeX and its necessary packages. Refer to the `Dockerfile` for the list of required dependencies and install their equivalents for your system.  
 
-The following sequence diagram outlines the process flow of the tool:
+### Personalization  
+You may want to customize the templates to fit your needs. Feel free to modify or create new templates, but ensure the `%something%` placeholders remain intact,  
+as these serve as anchors for Anemon. If you want you can even share it by...
 
-```mermaid
-sequenceDiagram
-CV->>+DirectoryReader: Ask to read the output.yml
-DirectoryReader-->>-CV: Return the Output
-CV->>+DirectoryReader: Ask to read the CV directory tree
-DirectoryReader-->>-CV: Return the Sections
-CV->>CV: Search for features and prioritize them
-CV->>CV: Create the LaTeX CV variants
-CV -->>System: Launch the compilation of the CVs
-```
-
-### Class Design
-
-The following class diagram illustrates the key components of the system:
-
-```mermaid
-classDiagram
-direction RL
-
-CV -- ProjectSection
-CV -- SkillsSection
-CV -- EducationSection
-CV -- DirectoryReader
-CV -- Output
-CV -- ProfessionalSection
-
-class CV{
-  Section sections
-  generateLatexCV()
-  compileLatexCV()
-}
-
-class Output{
-  map[string]string Target
-}
-
-class DirectoryReader{
-  Array<Section> getSections()
-  Output getOutput()
-}
-
-namespace Section {
-
-  class ProjectSection {
-    String Title
-    String Description
-    String Skill
-    String Link
-    void SortFor(output)
-  }
-
-  class ProfessionalSection {
-    String Title
-    String Description
-    String Skill
-    String Link
-    void SortFor(output)
-  }
-
-  class SkillsSection {
-    Array<String> Skill
-    void SortFor(output)
-  }
-
-  class EducationSection {
-    String Title
-    String Description
-    String Link
-    void SortFor(output)
-  }
-}
-```
-
-## How to Use
-
-1. **Clone the Repository**: Clone this repository to your local machine.
-2. **Prepare Your Directory**: Structure your directory with Markdown files as shown in the example above.
-3. **Create Your `output.yml`**: Define your CV variations and the features to prioritize in an `output.yml` file.
-4. **Run the Tool**: Execute the Golang program to generate LaTeX files, where specified features are prioritized and emphasized.
-5. **Compile the LaTeX Files**: Compile the generated LaTeX files to produce your final CV PDFs. This can be done locally or using GitHub Actions.
+### Contribute  
+Anemon has room for improvement and expansion. Contributions to enhance functionality or fix issues are welcome.  
+Many parts of the project were initially designed as workarounds for personal use and can be improved.  
+For example, the limited templates available reflect its original focus on personal needs.

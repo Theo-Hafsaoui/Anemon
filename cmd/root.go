@@ -1,19 +1,50 @@
 package cmd
 
 import (
-	"os"
-	"github.com/spf13/cobra"
+    "anemon/internal/adapters/input"
+    "github.com/spf13/cobra"
+    "os"
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "anemon",
-	Short: "a CV genrator",
-	Long:  `This CLI tool, written in Go, automates the generation of customized CVs from Markdown files based on a specified configuration. It parses CV sections in
-    multiple languages, prioritizes key skills or features as defined in an output.yml file, and outputs LaTeX files for each CV version, ready for compilation.`,
+    Use:   "anemon",
+    Short: "A CV generator",
+    Long:  `This CLI tool, automates the generation of customized CVs from Markdown files based on a specified configuration.`,
+    RunE: func(cmd *cobra.Command, args []string) error {
+        threshold, err := cmd.Flags().GetInt("threshold")
+        if err != nil { return err }
+
+        root, err := os.Getwd()
+        if err != nil { return err }
+
+        if err != nil {
+            return err
+        }
+        input.ChangeOverflowThreshold(threshold)
+
+        generate, err := cmd.Flags().GetBool("generate")
+        if err != nil { return err }
+
+        if generate {
+            return input.GenerateCVFromMarkDownToLatex(root)
+        }
+
+        info, err := cmd.Flags().GetBool("cvInfo")
+        if err != nil { return err }
+        if info{
+            input.PrintAllCvs(root)
+            return nil
+        }
+
+        return nil
+    },
 }
 
 func Execute() {
-	if err := rootCmd.Execute(); err != nil {
-		os.Exit(1)
-	}
+    rootCmd.Flags().IntP("threshold", "t", 1, "Set the page overflow threshold (default 1)")
+    rootCmd.Flags().BoolP("generate", "g", false, "Generate a CV")
+    rootCmd.Flags().BoolP("cvInfo", "i", false, "Get all the info of all the cvs")
+    if err := rootCmd.Execute(); err != nil {
+        os.Exit(1)
+    }
 }
