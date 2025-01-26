@@ -1,4 +1,4 @@
-module anemon
+module github.com/Theo-Hafsaoui/Anemon
 
 go 1.22.0
 

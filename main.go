@@ -1,7 +1,7 @@
 package main
 
 import (
-	"anemon/cmd"
+	"github.com/Theo-Hafsaoui/Anemon/cmd"
 )
 
 func main() {

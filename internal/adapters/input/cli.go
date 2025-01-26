@@ -1,8 +1,8 @@
 package input
 
 import (
-	"anemon/internal/adapters/output"
-	"anemon/internal/core"
+	"github.com/Theo-Hafsaoui/Anemon/internal/adapters/output"
+	"github.com/Theo-Hafsaoui/Anemon/internal/core"
 )
 
 // Use the implementation for markdown and latex to generate latex CV from a tree dir of mardown document

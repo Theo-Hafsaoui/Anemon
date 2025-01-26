@@ -1,7 +1,7 @@
 package input
 
 import (
-	core "anemon/internal/core"
+	core "github.com/Theo-Hafsaoui/Anemon/internal/core"
 	"os"
 	"path/filepath"
 	"reflect"

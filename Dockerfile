@@ -8,4 +8,4 @@ RUN go mod download && go mod verify
 COPY . .
 RUN make build
 
-CMD ["./anemon", "-g"]
+CMD ["./Anemon", "-g"]

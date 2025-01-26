@@ -1,7 +1,7 @@
 package cmd
 
 import (
-    "anemon/internal/adapters/input"
+    "github.com/Theo-Hafsaoui/Anemon/internal/adapters/input"
     "github.com/spf13/cobra"
     "os"
 )

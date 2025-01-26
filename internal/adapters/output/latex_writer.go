@@ -1,7 +1,7 @@
 package output
 
 import (
-	"anemon/internal/core"
+	"github.com/Theo-Hafsaoui/Anemon/internal/core"
 	"errors"
 	"log/slog"
 	"fmt"
